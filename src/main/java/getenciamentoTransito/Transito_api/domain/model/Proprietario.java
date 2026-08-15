@@ -1,4 +1,5 @@
 package getenciamentoTransito.Transito_api.domain.model;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@JsonPropertyOrder("id")
 @Entity
 
 

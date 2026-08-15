@@ -1,24 +1,58 @@
 package getenciamentoTransito.Transito_api.controller;
 
 import getenciamentoTransito.Transito_api.domain.model.Proprietario;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import getenciamentoTransito.Transito_api.domain.model.ProprietarioRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import lombok.AllArgsConstructor;
 
+
+@AllArgsConstructor
 @RestController
+@RequestMapping("/proprietarios")
 public class ProprietarioController {
-    @PersistenceContext
-    private EntityManager manager;
 
-    @GetMapping("/proprietarios")
-    public List<Proprietario> listar(){
-        TypedQuery<Proprietario> query=manager.createQuery("from Proprietario",Proprietario.class);
-       return query.getResultList();
+    private final ProprietarioRepository proprietarioRepository;
+
+    @GetMapping()
+    public List<Proprietario> listar() {
+        return proprietarioRepository.findAll();
+    }
+
+    @GetMapping("{proprietarioId}")
+    public ResponseEntity buscar(@PathVariable Long proprietarioId){
+     return proprietarioRepository.findById(proprietarioId)
+             .map(ResponseEntity::ok)
+             .orElse(ResponseEntity.notFound().build());
 
     }
 
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Proprietario adicionar(@RequestBody Proprietario proprietario){
+        return proprietarioRepository.save(proprietario);
+    }
+
+    @PutMapping("/{proprietarioId}")
+        public ResponseEntity<Proprietario> atualizar(@PathVariable Long proprietarioId,
+                                                      @RequestBody Proprietario proprietario) {
+        if (!proprietarioRepository.existsById(proprietarioId)) {
+                return ResponseEntity.notFound().build();
+            }
+
+        proprietario.setId(proprietarioId);
+        Proprietario proprietarioAtualizado = proprietarioRepository.save(proprietario);
+
+        return ResponseEntity.ok(proprietarioAtualizado);
+    }
+    @DeleteMapping("{proprietarioId}")
+       public ResponseEntity<Void> remover(@PathVariable Long proprietarioId){
+            if(!proprietarioRepository.existsById(proprietarioId)){
+                  return ResponseEntity.notFound().build();
+            }
+            proprietarioRepository.deleteById(proprietarioId);
+            return ResponseEntity.noContent().build();
+       }
 }
