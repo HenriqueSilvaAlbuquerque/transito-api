@@ -1,4 +1,4 @@
-package getenciamentoTransito.Transito_api.domain.model;
+package getenciamentoTransito.Transito_api.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
