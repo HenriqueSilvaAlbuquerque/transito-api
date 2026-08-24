@@ -50,5 +50,5 @@ public class Veiculo {
     private LocalDateTime dataCadastro;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private LocalDateTime dataAprensao;
+    private LocalDateTime dataApreensao;
 }

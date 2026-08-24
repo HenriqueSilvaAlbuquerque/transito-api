@@ -30,6 +30,9 @@ public class Proprietario {
     @Size(max = 255)
     @Email
     private String email;
+    @NotBlank
+    @Size(max = 20)
+    @Column(name = "fone")
     private String telefone;
 
 }
