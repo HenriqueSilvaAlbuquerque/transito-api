@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 public class apiExceptionHandler extends ResponseEntityExceptionHandler {
     private final MessageSource messageSource;
 
+
+
     @Override
     protected @Nullable ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         ProblemDetail problemDetail = ProblemDetail.forStatus(status);
@@ -41,6 +43,13 @@ public class apiExceptionHandler extends ResponseEntityExceptionHandler {
     ProblemDetail problemDetail= ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
     problemDetail.setTitle(e.getMessage());
     return problemDetail;
+    }
+
+    @ExceptionHandler(EntidadeNaoEncontradaException.class)
+    public ProblemDetail handEntidadeNaoEncontrada (NegocioException e){
+        ProblemDetail problemDetail= ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+        problemDetail.setTitle(e.getMessage());
+        return problemDetail;
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

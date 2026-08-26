@@ -16,6 +16,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -52,4 +54,25 @@ public class Veiculo {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private OffsetDateTime dataApreensao;
+
+    @OneToMany(mappedBy="veiculo",cascade=CascadeType.ALL)
+    private List<Atuacao> atuacoes = new ArrayList<>();
+
+    public Atuacao adicionarAtuacao(Atuacao atuacao){
+        atuacao.setDataOcorrencia(OffsetDateTime.now());
+        atuacao.setVeiculo(this);
+        getAtuacoes().add(atuacao);
+        return atuacao;
+    }
+
+
+    public void apreender(){
+        if(estaApreendido()){
+
+        }
+    }
+
+    public boolean estaApreendido(){
+        return StatusVeiculo.APREENDIDO.equals(getStatus());
+    }
 }

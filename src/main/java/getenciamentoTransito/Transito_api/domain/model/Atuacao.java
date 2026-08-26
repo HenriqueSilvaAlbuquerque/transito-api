@@ -1,0 +1,30 @@
+package getenciamentoTransito.Transito_api.domain.model;
+
+import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Entity
+public class Atuacao {
+
+    @EqualsAndHashCode.Include
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    private Veiculo veiculo;
+
+
+    private String descricao;
+    private BigDecimal valorMulta;
+    private OffsetDateTime dataOcorrencia;
+
+}

@@ -1,5 +1,6 @@
 package getenciamentoTransito.Transito_api.domain.service;
 
+import getenciamentoTransito.Transito_api.ExceptionHandler.EntidadeNaoEncontradaException;
 import getenciamentoTransito.Transito_api.domain.exception.NegocioException;
 import getenciamentoTransito.Transito_api.domain.model.Proprietario;
 import getenciamentoTransito.Transito_api.domain.model.StatusVeiculo;
@@ -18,6 +19,13 @@ public class RegistroVeiculoService {
 
     private final VeiculoRepository veiculoRepository;
     private final RegistroProprietarioService registroProprietarioService;
+
+
+    public Veiculo buscar(Long veiculoId) {
+        return veiculoRepository.findById(veiculoId)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Veículo não encontrado"));
+    }
+
 
     @Transactional
     public Veiculo cadastrar(Veiculo novoVeiculo) {
