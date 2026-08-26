@@ -1,6 +1,8 @@
 package getenciamentoTransito.Transito_api.controller;
 
-import getenciamentoTransito.Transito_api.domain.exception.NegocioException;
+import getenciamentoTransito.Transito_api.RepresentModel.VeiculoRepresentModel;
+import getenciamentoTransito.Transito_api.RepresentModel.input.VeiculoInput;
+import getenciamentoTransito.Transito_api.assembler.VeiculoAssembler;
 import getenciamentoTransito.Transito_api.domain.model.Veiculo;
 import getenciamentoTransito.Transito_api.domain.repository.VeiculoRepository;
 import getenciamentoTransito.Transito_api.domain.service.RegistroVeiculoService;
@@ -19,27 +21,26 @@ public class VeiculoController {
 
     private final VeiculoRepository veiculoRepository;
     private final RegistroVeiculoService registroVeiculoService;
+    private final VeiculoAssembler veiculoAssembler;
 
     @GetMapping
-    public List<Veiculo> listar() {
-        return veiculoRepository.findAll();
+    public List<VeiculoRepresentModel> listar() {
+        return veiculoAssembler.toCollectionModel(veiculoRepository.findAll());
     }
 
     @GetMapping("/{veiculoId}")
-    public ResponseEntity<Veiculo> buscar(@PathVariable Long veiculoId) {
+    public ResponseEntity<VeiculoRepresentModel> buscar(@PathVariable Long veiculoId) {
         return veiculoRepository.findById(veiculoId)
+                .map(veiculoAssembler::toModel)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Veiculo cadastrar(@Valid @RequestBody Veiculo veiculo) {
-        return registroVeiculoService.cadastrar(veiculo);
-    }
-
-    @ExceptionHandler(NegocioException.class)
-    public ResponseEntity<String> capturar(NegocioException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+    public VeiculoRepresentModel cadastrar(@Valid @RequestBody VeiculoInput veiculoInput) {
+        Veiculo novoVeiculo=veiculoAssembler.toEntity(veiculoInput);
+        Veiculo veiculoCadrastado=registroVeiculoService.cadastrar(novoVeiculo);
+        return veiculoAssembler.toModel(veiculoCadrastado);
     }
 }
