@@ -2,6 +2,7 @@ package getenciamentoTransito.Transito_api.domain.model;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import getenciamentoTransito.Transito_api.domain.exception.NegocioException;
 import getenciamentoTransito.Transito_api.domain.validation.ValidationGroups;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -68,11 +69,27 @@ public class Veiculo {
 
     public void apreender(){
         if(estaApreendido()){
-
+                throw new NegocioException("Veículo já se encontra aprendido");
         }
+        setStatus(StatusVeiculo.APREENDIDO);
+        setDataApreensao(OffsetDateTime.now());
     }
+
+    public void removerApreensao(){
+        if (naoEstaAprendido()){
+            throw  new NegocioException("Veiculo não está aprendido");
+        }
+        setStatus(StatusVeiculo.REGULAR);
+        setDataApreensao(null);
+
+    }
+
 
     public boolean estaApreendido(){
         return StatusVeiculo.APREENDIDO.equals(getStatus());
+    }
+
+    public boolean naoEstaAprendido(){
+        return !estaApreendido();
     }
 }
